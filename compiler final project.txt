@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-
 #define MAX_WORDS 1000
 #define MAX_WORD_LENGTH 50
-
-// Utility function: Convert a string to lowercase
 void toLowercase(char *str) 
 {
     for (int i = 0; str[i]; i++)
@@ -13,32 +10,24 @@ void toLowercase(char *str)
         str[i] = tolower(str[i]);
     }
 }
-
-// Encrypt the text by shifting each letter by 3 positions forward
 void encryptText(char *text) {
     for (int i = 0; text[i] != '\0'; i++) {
         if (isalpha(text[i]))
         {
-            // Shift letters by 3 positions forward
             char base = (isupper(text[i])) ? 'A' : 'a';
             text[i] = (text[i] - base + 3) % 26 + base;
         }
     }
 }
-
-// Decrypt the text by shifting each letter by 3 positions backward
 void decryptText(char *text) {
     for (int i = 0; text[i] != '\0'; i++) {
         if (isalpha(text[i]))
         {
-            // Shift letters by 3 positions backward
             char base = (isupper(text[i])) ? 'A' : 'a';
-            text[i] = (text[i] - base - 3 + 26) % 26 + base;  // +26 ensures positive modulus
+            text[i] = (text[i] - base - 3 + 26) % 26 + base;  
         }
     }
 }
-
-// Encryption/Decryption Menu
 void encryptionDecryption()
 {
     int choice;
@@ -49,23 +38,17 @@ void encryptionDecryption()
     printf("2. Decrypt Text\n");
     printf("Enter your choice: ");
     scanf("%d", &choice);
-    
-    getchar();  // Consume the newline character left by scanf
+     getchar();  
     printf("Enter your text: ");
     fgets(text, sizeof(text), stdin);
-    
-    // Remove the newline character from the input if present
     text[strcspn(text, "\n")] = '\0';
-    
-    if (choice == 1) 
+     if (choice == 1) 
     {
-        // Encrypt the text
         encryptText(text);
         printf("Encrypted Text: %s\n", text);
     } 
     else if (choice == 2)
     {
-        // Decrypt the text
         decryptText(text);
         printf("Decrypted Text: %s\n", text);
     } 
@@ -73,30 +56,20 @@ void encryptionDecryption()
         printf("Invalid choice. Please choose either 1 or 2.\n");
     }
 }
-
-// Email Validator
 void emailValidator() {
     char email[256];
     printf("\nEnter an email to validate: ");
     scanf("%s", email);
-
-    // Find the '@' character
     char *at = strchr(email, '@');
     if (!at) {
         
         printf("'%s' is not a valid email address. Missing '@'.\n", email);
         return;
     }
-
-    // Extract the domain part
     char *domain = at + 1;
-
-    // Allowed domains
     const char *allowedDomains[] = {"gmail.com", "yahoo.com", "diu.edu.com"};
     int isValidDomain = 0;
-
-    for (int i = 0; i < 3; i++) {
-        
+   for (int i = 0; i < 3; i++) {
         if (strcmp(domain, allowedDomains[i]) == 0)
         {
             isValidDomain = 1;
@@ -111,8 +84,6 @@ void emailValidator() {
         printf("'%s' is not a valid email address. Unsupported domain '%s'.\n", email, domain);
     }
 }
-
-// Word Counter with Character Counter
 void wordCounter() {
     
     char paragraph[1024];
@@ -120,39 +91,31 @@ void wordCounter() {
     char choice;
 
     printf("\nEnter a paragraph (end input with ENTER):\n");
-    getchar(); // Clear input buffer
+    getchar(); 
     fgets(paragraph, sizeof(paragraph), stdin);
 
-    paragraph[strcspn(paragraph, "\n")] = '\0'; // Remove newline character
-
+    paragraph[strcspn(paragraph, "\n")] = '\0'; 
     printf("Do you want to check the frequency of a specific word? (y/n): ");
-    scanf(" %c", &choice); // Space before %c to consume leftover newline
-
+    scanf(" %c", &choice); 
     int wordCount = 0;
     int specificWordCount = 0;
-    int charCount = 0; // Variable to count characters
-
-    if (tolower(choice) == 'y')
+    int charCount = 0; 
+  if (tolower(choice) == 'y')
     {
         
         printf("Enter the word to check its frequency: ");
         scanf("%s", wordToCheck);
         toLowercase(wordToCheck);
     }
-
-    // Tokenize and process the paragraph
     char *token = strtok(paragraph, " \t\n.,!?;:\"()[]{}");
     
     while (token) {
-        
-        toLowercase(token); // Normalize to lowercase for comparison
+        toLowercase(token); 
         wordCount++;
 
         if (tolower(choice) == 'y' && strcmp(token, wordToCheck) == 0) {
             specificWordCount++;
         }
-
-        // Count the characters in the token (excluding punctuation and spaces)
         charCount += strlen(token);
 
         token = strtok(NULL, " \t\n.,!?;:\"()[]{}");
@@ -167,8 +130,6 @@ void wordCounter() {
         
     }
 }
-
-// Password Strength Checker
 void passwordChecker()
 {
     

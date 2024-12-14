@@ -1,0 +1,262 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_WORDS 1000
+#define MAX_WORD_LENGTH 50
+
+// Utility function: Convert a string to lowercase
+void toLowercase(char *str) 
+{
+    for (int i = 0; str[i]; i++)
+    {
+        str[i] = tolower(str[i]);
+    }
+}
+
+// Encrypt the text by shifting each letter by 3 positions forward
+void encryptText(char *text) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i]))
+        {
+            // Shift letters by 3 positions forward
+            char base = (isupper(text[i])) ? 'A' : 'a';
+            text[i] = (text[i] - base + 3) % 26 + base;
+        }
+    }
+}
+
+// Decrypt the text by shifting each letter by 3 positions backward
+void decryptText(char *text) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i]))
+        {
+            // Shift letters by 3 positions backward
+            char base = (isupper(text[i])) ? 'A' : 'a';
+            text[i] = (text[i] - base - 3 + 26) % 26 + base;  // +26 ensures positive modulus
+        }
+    }
+}
+
+// Encryption/Decryption Menu
+void encryptionDecryption()
+{
+    int choice;
+    char text[1024];
+    
+    printf("\nChoose an option:\n");
+    printf("1. Encrypt Text\n");
+    printf("2. Decrypt Text\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    
+    getchar();  // Consume the newline character left by scanf
+    printf("Enter your text: ");
+    fgets(text, sizeof(text), stdin);
+    
+    // Remove the newline character from the input if present
+    text[strcspn(text, "\n")] = '\0';
+    
+    if (choice == 1) 
+    {
+        // Encrypt the text
+        encryptText(text);
+        printf("Encrypted Text: %s\n", text);
+    } 
+    else if (choice == 2)
+    {
+        // Decrypt the text
+        decryptText(text);
+        printf("Decrypted Text: %s\n", text);
+    } 
+    else {
+        printf("Invalid choice. Please choose either 1 or 2.\n");
+    }
+}
+
+// Email Validator
+void emailValidator() {
+    char email[256];
+    printf("\nEnter an email to validate: ");
+    scanf("%s", email);
+
+    // Find the '@' character
+    char *at = strchr(email, '@');
+    if (!at) {
+        
+        printf("'%s' is not a valid email address. Missing '@'.\n", email);
+        return;
+    }
+
+    // Extract the domain part
+    char *domain = at + 1;
+
+    // Allowed domains
+    const char *allowedDomains[] = {"gmail.com", "yahoo.com", "diu.edu.com"};
+    int isValidDomain = 0;
+
+    for (int i = 0; i < 3; i++) {
+        
+        if (strcmp(domain, allowedDomains[i]) == 0)
+        {
+            isValidDomain = 1;
+            break;
+        }
+    }
+
+    if (isValidDomain) {
+        
+        printf("'%s' is a valid email address.\n", email);
+    } else {
+        printf("'%s' is not a valid email address. Unsupported domain '%s'.\n", email, domain);
+    }
+}
+
+// Word Counter with Character Counter
+void wordCounter() {
+    
+    char paragraph[1024];
+    char wordToCheck[MAX_WORD_LENGTH];
+    char choice;
+
+    printf("\nEnter a paragraph (end input with ENTER):\n");
+    getchar(); // Clear input buffer
+    fgets(paragraph, sizeof(paragraph), stdin);
+
+    paragraph[strcspn(paragraph, "\n")] = '\0'; // Remove newline character
+
+    printf("Do you want to check the frequency of a specific word? (y/n): ");
+    scanf(" %c", &choice); // Space before %c to consume leftover newline
+
+    int wordCount = 0;
+    int specificWordCount = 0;
+    int charCount = 0; // Variable to count characters
+
+    if (tolower(choice) == 'y')
+    {
+        
+        printf("Enter the word to check its frequency: ");
+        scanf("%s", wordToCheck);
+        toLowercase(wordToCheck);
+    }
+
+    // Tokenize and process the paragraph
+    char *token = strtok(paragraph, " \t\n.,!?;:\"()[]{}");
+    
+    while (token) {
+        
+        toLowercase(token); // Normalize to lowercase for comparison
+        wordCount++;
+
+        if (tolower(choice) == 'y' && strcmp(token, wordToCheck) == 0) {
+            specificWordCount++;
+        }
+
+        // Count the characters in the token (excluding punctuation and spaces)
+        charCount += strlen(token);
+
+        token = strtok(NULL, " \t\n.,!?;:\"()[]{}");
+    }
+
+
+    printf("\nThe paragraph contains %d words.\n", wordCount);
+    printf("The paragraph contains %d characters (excluding spaces and punctuation).\n", charCount);
+
+    if (tolower(choice) == 'y') {
+        printf("The word '%s' appears %d times in the paragraph.\n", wordToCheck, specificWordCount);
+        
+    }
+}
+
+// Password Strength Checker
+void passwordChecker()
+{
+    
+    char password[256];
+    printf("\nEnter your password: ");
+    scanf("%s", password);
+
+    int length = strlen(password);
+    int hasUpper = 0, hasLower = 0, hasDigit = 0, hasSpecial = 0;
+
+    for (int i = 0; i < length; i++) {
+        if (isupper(password[i])) {
+            hasUpper = 1;
+        }
+        if (islower(password[i])) {
+            hasLower = 1;
+        }
+        if (isdigit(password[i])) {
+            hasDigit = 1;
+        }
+        if (ispunct(password[i])) {
+            hasSpecial = 1;
+        }
+    }
+
+    printf("Password Strength: ");
+    if (length < 8)
+    {
+        printf("Weak (too short)\n");
+    }
+    else
+    {
+        if (!hasUpper) {
+            printf("Missing uppercase letter.\n");
+        }
+        if (!hasLower) {
+            printf("Missing lowercase letter.\n");
+        }
+        if (!hasDigit) {
+            printf("Missing digit.\n");
+        }
+        if (!hasSpecial) {
+            printf("Missing special character.\n");
+        }
+
+        if (hasUpper && hasLower && hasDigit && hasSpecial) {
+            printf("Strong\n");
+        } else if (hasUpper || hasLower || hasDigit || hasSpecial) {
+            printf("Medium (add missing character types)\n");
+        }
+    }
+}
+
+int main() 
+{
+    int choice;
+
+    while (1)
+    {
+        printf("\n=== TextLexicon ===");
+        printf("\n1. Email Validator");
+        printf("\n2. Word Counter");
+        printf("\n3. Password Strength Checker");
+        printf("\n4. Encrypt/Decrypt Text");
+        printf("\n5. Exit");
+        printf("\nChoose an option: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                emailValidator();
+                break;
+            case 2:
+                wordCounter();
+                break;
+            case 3:
+                passwordChecker();
+                break;
+            case 4:
+                encryptionDecryption();
+                break;
+            case 5:
+                printf("Exiting TextLexicon. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
